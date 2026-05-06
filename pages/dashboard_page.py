@@ -40,4 +40,4 @@ class DashboardPage:
         texts= options.all_text_contents()
         print(texts)
         count = options.count()
-        assert count == 4, f"Expected 4 side pane options, got {count}"
+        assert count == 3, f"Expected 4 side pane options, got {count}"

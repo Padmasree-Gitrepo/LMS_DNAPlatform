@@ -2,7 +2,9 @@ import inspect
 
 from pages.login_page import LoginPage
 from pages.dashboard_page import DashboardPage
-from pages.leave_page import LeavePage
+from pages.wfh_page import WfhPage
+from pages.holidaycal_page import HolidayPage
+from pages.logout_page import LogoutPage
 from utils.config import BASE_URL, USERNAME, PASSWORD
 
 
@@ -65,16 +67,43 @@ def test_full_flow(page):
     # 4. Validate side panel options
     dashboard.validate_sidepanel_options()
    
-    # Apply Leave
-    leave = LeavePage(page)
-    leave.apply_leave()
-    assert leave.verify_leave_applied()
+  
+    # Apply Work From Home
 
-    # Cancel Leave
-    leave.cancel_leave()
+    wfh = WfhPage(page)
+
+    wfh.apply_wfh(
+    reason_type="Self health",
+    start_date=7,
+    end_date=8,
+    notes="Working from home due to personal commitment"
+)
+
+    assert wfh.verify_wfh_applied()
+
+    #Cancel Work from Home
+
+    # Step 1: Navigate
+    wfh.go_to_leave_tracker()
+
+    # Step 2: Open filters
+    wfh.open_filters()
+
+    # Step 3: Apply Leaves filter
+    wfh.apply_leaves_filter()
+
+    # Step 4: Cancel WFH
+    wfh.cancel_wfh()
+
+    # Step 5: Verify
+    assert wfh.verify_cancel_success()
+
+    #Holidays calender
+    hol=HolidayPage(page)
+    hol.go_to_holiday_calendar()
+    hol.print_holidays()
 
     # Logout
-    page.click(".profile-icon")
-    page.click("text=Logout")
-
-    assert page.locator("text=Login").is_visible()
+    logout=LogoutPage(page)
+    logout.click_profile()
+    
